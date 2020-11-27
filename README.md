@@ -3,6 +3,10 @@ Transform plain ascii files to kml format
 
 This is a dead simple python script to transform plain ascii files to kml format. It reads points (aka code, latitude, longtitude) from STDIN and transforms them to kml Placemarks inside a kml document. For a description of the input file format, see the file sample.ascii; the output of the script for this file is presented in the file sample.kml.
 
+For more information and usage, type:
+``` $>./ascii2kml.py -h ```
+to display the help message.
+
 Example:
 ```
 $> cat sample.ascii
