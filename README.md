@@ -1,12 +1,11 @@
 # ascii2kml
 Transform plain ascii files to kml format
 
-This is a dead simple python script to transform points recorded in plain ascii  
-files to Palcemarks in a valid KML document.
-The program will reads points (aka code, latitude, longtitude) from STDIN and 
-transforms them to KML Placemarks inside a KML document. For a description of 
-the input file format, see the file sample.ascii; the output of the script for 
-this file is presented in the file sample.kml.
+This is a dead simple python script to transform points recorded in plain ascii 
+format to Palcemarks in a valid KML document. The program will read points 
+(aka lines of code, latitude, longtitude) from STDIN and transform them to KML 
+Placemarks inside a KML document. For a description of the input file format, 
+see the file sample.ascii; the output of the script for this file is presented in the file sample.kml.
 
 ## input format for data points
 The program reads in points from STDIN; every line is considered a new 
@@ -35,7 +34,18 @@ where:
     a floating point format convention. Longtitude should be given in decimal 
     degrees.
 
-  * DESCRIPTION [optional] 
+  * DESCRIPTION [optional] An optional description of the point which will be 
+    written in the Placemark's description tag. Note that you must use the switch 
+    `--description-after-col=N` for the program to know that the string starting 
+    at column N to the end of line is a description (otherwise columns after 
+    LONGTITUDE will be ignored). Note that column numbering starts at column 0 and 
+    that if you specify the `--name-w-spaces` switch, the string interpreted as 
+    CODE will be counted as one column (whatever number of columns/whitespaces it 
+    contains). E.g. the line `Name2 With  Big Name 37.694930591 22.717623263 and it also has a description!` 
+    with the command `ascii2kml.py --description-after-col=3 --name-w-spaces` will 
+    be interpreted as: `Column[0] = CODE = 'Name2 With  Big Name'`, `Column[1] = LATITUDE = 37.694930591`, 
+    `Column[2] = LONGTITUDE = 22.717623263` and everything after column 3 is a 
+    description, `Column[3 to EOL] = DESCRIPTION = 'and it also has a description!'`.
 
 
 For more information and usage, type:
@@ -51,8 +61,16 @@ $> cat sample.ascii
 # this is a comment line, no problem!
         # this is also a comment line
 046007 37.305266755 21.553844827
+Name With   Spaces 37.794930591 22.817623263
+Name2 With  Big Name 37.694930591 22.717623263 and it also has a description!
+This is an erronuous line
+Also an erronuous line 37.594930591
+# the following is also an erronuous line
+37.594930591 22.617623263
 
-$> cat sample.ascii | ./ascii2kml.py --document-name=foobar --description-after-col=3
+$> cat sample.ascii | ./ascii2kml.py \ 
+  --document-name=foobar --description-after-col=3 \
+  --name-w-spaces --ignore-error-lines
 <?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
 <Document>
@@ -64,8 +82,7 @@ $> cat sample.ascii | ./ascii2kml.py --document-name=foobar --description-after-
   </Placemark>
   <Placemark>
     <name>047007</name>
-    <description>This   is       a      description for the point  with code "047007"
-</description>
+    <description>This   is       a      description for the point  with code "047007"</description>
     <Point><coordinates>23.246122441,39.023304923,0.0</coordinates></Point>
   </Placemark>
   <Placemark>
@@ -77,6 +94,16 @@ $> cat sample.ascii | ./ascii2kml.py --document-name=foobar --description-after-
     <name>046007</name>
     <description></description>
     <Point><coordinates>21.553844827,37.305266755,0.0</coordinates></Point>
+  </Placemark>
+  <Placemark>
+    <name>Name With   Spaces</name>
+    <description></description>
+    <Point><coordinates>22.817623263,37.794930591,0.0</coordinates></Point>
+  </Placemark>
+  <Placemark>
+    <name>Name2 With  Big Name</name>
+    <description>and it also has a description!</description>
+    <Point><coordinates>22.717623263,37.694930591,0.0</coordinates></Point>
   </Placemark>
 </Document>
 </kml>
