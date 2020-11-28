@@ -1,7 +1,42 @@
 # ascii2kml
 Transform plain ascii files to kml format
 
-This is a dead simple python script to transform plain ascii files to kml format. It reads points (aka code, latitude, longtitude) from STDIN and transforms them to kml Placemarks inside a kml document. For a description of the input file format, see the file sample.ascii; the output of the script for this file is presented in the file sample.kml.
+This is a dead simple python script to transform points recorded in plain ascii  
+files to Palcemarks in a valid KML document.
+The program will reads points (aka code, latitude, longtitude) from STDIN and 
+transforms them to KML Placemarks inside a KML document. For a description of 
+the input file format, see the file sample.ascii; the output of the script for 
+this file is presented in the file sample.kml.
+
+## input format for data points
+The program reads in points from STDIN; every line is considered a new 
+individual point. The points should follow the following convention:
+```CODE LATITUDE LONGTITUDE DESCRIPTION```
+where:
+
+  * CODE is a name for the specific point; it will be interpreted as the 
+    Placemark's name tag. In **default mode, CODE must not contain whitespace 
+    characters**. If it does (contain whitespaces and or tabs characters), 
+    then **use the switch `--name-w-spaces`**; this will trigger a different
+    approach where the programm will interpret as CODE all columns starting from 
+    the first one up untill it finds a column that contains a float number. The 
+    latter is interpreted as latitude; everything before this column is 
+    interpreted as the CODE. E.g.
+    `046007 37.305266755 21.553844827` is ok, '046007' is interpreted as CODE.
+    `Name With   Spaces 37.794930591 22.817623263` is not ok in default mode. If 
+    we use the switch `--name-w-spaces` though, the program will interpret the 
+    string 'Name With   Spaces` as CODE.
+
+  * LATITUDE is the latitude of the point. It must follow the CODE and follow 
+    a floating point format convention. Latitude should be given in decimal 
+    degrees.
+  
+  * LONGTITUDE is the longtitude of the point. It must follow the LATITUDE and follow 
+    a floating point format convention. Longtitude should be given in decimal 
+    degrees.
+
+  * DESCRIPTION [optional] 
+
 
 For more information and usage, type:
 ``` $>./ascii2kml.py -h ```
