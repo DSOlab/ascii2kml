@@ -59,7 +59,7 @@ def parse_line(line, names_w_spaces=False, description_col=None):
         name = line[0:line.find("{:}".format(lat_str)) - 1]
     else:
         name = l[0]
-        idx = 0
+        idx = 1
     ##  resolve latitude/longtitude
     assert (len(l) >= idx + 2)
     try:
